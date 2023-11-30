@@ -1,0 +1,11 @@
+version: '3'
+name: m1_custom_app
+networks:
+  My-Store-Network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
+services:
+ 

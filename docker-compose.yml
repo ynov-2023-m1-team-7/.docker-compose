@@ -1,5 +1,5 @@
 version: '3'
-name: m1_custom_app
+name: m1_myStore
 networks:
   My-Store-Network:
     driver: bridge

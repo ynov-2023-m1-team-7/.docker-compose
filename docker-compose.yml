@@ -11,7 +11,7 @@ networks:
 services:
   My-Store-PostgreSql:
     build: 
-      context: My-Store-PostgreSql
+      context: ./My-Store-PostgreSql
       dockerfile: Dockerfile
     image: m1_custom_postgresql
     container_name: m1_custom_postgresql
@@ -29,7 +29,7 @@ services:
 
   My-Store-Redis:
     build: 
-      context: My-Store-Redis
+      context: ./My-Store-Redis
       dockerfile: Dockerfile
     image: m1_custom_redis
     container_name: m1_custom_redis
@@ -40,7 +40,6 @@ services:
       - "6379:6379"
     volumes:
       - ./My-Store-Redis/data:/var/lib/redis/data
-  
   # my-store-api_go:
   #   build:
   #     context: ./my-store-api_go

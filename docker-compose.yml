@@ -1,11 +1,89 @@
 version: '3'
-name: m1_myStore
+name: m1_mystore
 networks:
-  My-Store-Network:
+  my-store-network:
     driver: bridge
     ipam:
       config:
         - subnet: 172.21.0.0/16
           gateway: 172.21.0.1
+
 services:
- 
+  my-store-postgresql:
+    build: 
+      context: ./my-store-postgresql
+      dockerfile: Dockerfile
+    image: m1_custom_postgresql
+    container_name: m1_custom_postgresql
+    restart: unless-stopped
+    networks:
+      - my-store-network
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./my-store-postgresql/data:/var/lib/postgresql/data2
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    
+  # my-store-api_go:
+  #   build:
+  #     context: ./my-store-api_go
+  #     dockerfile: Dockerfile
+  #   image: m1_custom_api_go
+  #   container_name: m1_custom_api_go
+  #   restart: unless-stopped
+  #   networks:
+  #     - my-store-network
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - .:/go/src/my-store-api
+  #   depends_on:
+  #     - my-store-postgresql
+  #   environment:
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PORT=${DB_PORT}
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_NAME=${DB_NAME}
+  
+  # my-store-api_fastify:
+  #   build:
+  #     context: ./my-store-api_fastify
+  #     dockerfile: Dockerfile
+  #   image: m1_custom_api_fastify
+  #   container_name: m1_custom_api_fastify
+  #   restart: unless-stopped
+  #   networks:
+  #     - my-store-network
+  #   ports:
+  #     - "8081:8081"
+  #   depends_on:
+  #     - my-store-postgresql
+  #   environment:
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_NAME=${DB_NAME}
+
+  # my-store:
+  #   build:
+  #     context: ./my-store
+  #     dockerfile: Dockerfile
+  #   image: m1_custom_my-store
+  #   container_name: m1_custom_my-store
+  #   restart: unless-stopped
+  #   networks:
+  #     - my-store-network
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - .:/var/www/html
+  #   depends_on:
+  #     - my-store-api_go
+  #     - my-store-postgresql
+  #   environment:
+  #     - API_PATH_GO=${API_PATH_GO}
+  #     - API_PATH_FASS=${API_PATH_FASS}
+    

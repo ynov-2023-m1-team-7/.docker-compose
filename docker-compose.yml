@@ -27,6 +27,24 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
 
+  My-Store-Mongo:
+    build: 
+      context: ./My-Store-Mongo
+      dockerfile: Dockerfile
+    image: m1_custom_mongo
+    container_name: m1_custom_mongo
+    restart: unless-stopped
+    networks:
+      - my-store-network
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./My-Store-Mongo/data:/var/lib/mongo/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+
   My-Store-Redis:
     build: 
       context: ./My-Store-Redis
@@ -40,27 +58,8 @@ services:
       - "6379:6379"
     volumes:
       - ./My-Store-Redis/data:/var/lib/redis/data
-  # my-store-api_go:
-  #   build:
-  #     context: ./my-store-api_go
-  #     dockerfile: Dockerfile
-  #   image: m1_custom_api_go
-  #   container_name: m1_custom_api_go
-  #   restart: unless-stopped
-  #   networks:
-  #     - my-store-network
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - .:/go/src/my-store-api
-  #   depends_on:
-  #     - my-store-postgresql
-  #   environment:
-  #     - DB_HOST=${DB_HOST}
-  #     - DB_PORT=${DB_PORT}
-  #     - DB_USER=${DB_USER}
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_NAME=${DB_NAME}
+
+# docker-compose --env-file .env -f docker-compose.yml up -d --build
   
   # my-store-api_fastify:
   #   build:

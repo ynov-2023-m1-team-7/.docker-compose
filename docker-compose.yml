@@ -27,9 +27,9 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
 
-  My-Store-Mongo:
+  My-Store-MongoSql:
     build: 
-      context: ./My-Store-Mongo
+      context: ./My-Store-MongoSql
       dockerfile: Dockerfile
     image: m1_custom_mongo
     container_name: m1_custom_mongo
@@ -39,7 +39,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./My-Store-Mongo/data:/var/lib/mongo/data
+      - ./My-Store-MongoSql/data:/var/lib/mongo/data
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}

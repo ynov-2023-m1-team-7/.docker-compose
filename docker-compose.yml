@@ -59,6 +59,26 @@ services:
     volumes:
       - ./My-Store-Redis/data:/var/lib/redis/data
 
+  My-Store-Api-Express:
+    build: 
+      context: ./My-Store-Api-Express
+      dockerfile: Dockerfile
+    image: m1_custom_api_express
+    container_name: m1_custom_api_express
+    restart: unless-stopped
+    networks:
+      - my-store-network
+    ports:
+      - "3030:3030"
+    depends_on:
+      - My-Store-PostgreSql
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - POSTGRES_URL=${POSTGRES_URL}
+
+
 # docker-compose --env-file .env -f docker-compose.yml up -d --build
   
   # my-store-api_fastify:

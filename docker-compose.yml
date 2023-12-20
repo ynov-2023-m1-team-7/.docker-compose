@@ -88,7 +88,7 @@ services:
     networks:
       - my-store-network
     ports:
-      - "8081:8081"
+      - "3232:3232"
     depends_on:
       - My-Store-PostgreSql
     environment:

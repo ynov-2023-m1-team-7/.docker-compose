@@ -78,44 +78,52 @@ services:
       - DB_NAME=${DB_NAME}
       - POSTGRES_URL=${POSTGRES_URL}
 
+  My-Store-Api-Fastify:
+    build: 
+      context: ./My-Store-Api-Fastify
+      dockerfile: Dockerfile
+    image: m1_custom_api_fastify
+    container_name: m1_custom_api_fastify
+    restart: unless-stopped
+    networks:
+      - my-store-network
+    ports:
+      - "8081:8081"
+    depends_on:
+      - My-Store-PostgreSql
+    environment:
+      - PORT=${PORT}
+      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_PWD=${MONGODB_PWD}
+      - MONGODB_URL=${MONGODB_URL}
+      - MONGODB_DB=${MONGODB_DB}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
 
+  My-Store:
+    build: 
+      context: ./My-Store
+      dockerfile: Dockerfile
+    image: m1_custom_my-store
+    container_name: m1_custom_my-store
+    restart: unless-stopped
+    networks:
+      - my-store-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - My-Store-Api-Express
+      - My-Store-Api-Fastify
+      - My-Store-PostgreSql
+      - My-Store-MongoSql
+      - My-Store-Redis
+    environment:
+      -NEXT_PUBLIC_API_ENDPOINT=${NEXT_PUBLIC_API_ENDPOINT}
+      -NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+
+# Command
 # docker-compose --env-file .env -f docker-compose.yml up -d --build
   
-  # my-store-api_fastify:
-  #   build:
-  #     context: ./my-store-api_fastify
-  #     dockerfile: Dockerfile
-  #   image: m1_custom_api_fastify
-  #   container_name: m1_custom_api_fastify
-  #   restart: unless-stopped
-  #   networks:
-  #     - my-store-network
-  #   ports:
-  #     - "8081:8081"
-  #   depends_on:
-  #     - my-store-postgresql
-  #   environment:
-  #     - DB_HOST=${DB_HOST}
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_NAME=${DB_NAME}
-
-  # my-store:
-  #   build:
-  #     context: ./my-store
-  #     dockerfile: Dockerfile
-  #   image: m1_custom_my-store
-  #   container_name: m1_custom_my-store
-  #   restart: unless-stopped
-  #   networks:
-  #     - my-store-network
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/var/www/html
-  #   depends_on:
-  #     - my-store-api_go
-  #     - my-store-postgresql
-  #   environment:
-  #     - API_PATH_GO=${API_PATH_GO}
-  #     - API_PATH_FASS=${API_PATH_FASS}
-    

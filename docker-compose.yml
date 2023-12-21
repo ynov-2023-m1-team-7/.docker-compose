@@ -10,7 +10,7 @@ networks:
 
 services:
   My-Store-PostgreSql:
-    build:
+    build: 
       context: ./My-Store-PostgreSql
       dockerfile: Dockerfile
     image: m1_custom_postgresql
@@ -21,14 +21,14 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./My-Store-PostgreSql/scripts/:/docker-entrypoint-initdb.d/
+      - ./My-Store-PostgreSql/data:/var/lib/postgresql/data2
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      # - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_DB=${POSTGRES_DB}
 
   My-Store-MongoSql:
-    build:
+    build: 
       context: ./My-Store-MongoSql
       dockerfile: Dockerfile
     image: m1_custom_mongo
@@ -46,7 +46,7 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
 
   My-Store-Redis:
-    build:
+    build: 
       context: ./My-Store-Redis
       dockerfile: Dockerfile
     image: m1_custom_redis
@@ -58,10 +58,12 @@ services:
       - "6379:6379"
     volumes:
       - ./My-Store-Redis/data:/var/lib/redis/data
+    depends_on:
+      - My-Store-PostgreSql
 
-  My-Store-Api-Express:
-    build:
-      context: ./My-Store-Api-Express
+  My-Store-API-Express:
+    build: 
+      context: ./My-Store-API-Express
       dockerfile: Dockerfile
     image: m1_custom_api_express
     container_name: m1_custom_api_express
@@ -72,6 +74,7 @@ services:
       - "3030:3030"
     depends_on:
       - My-Store-PostgreSql
+        
     environment:
       - FRONTEND_URL=${FRONTEND_URL}
       - PORT=${PORT}
@@ -84,9 +87,9 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
 
-  My-Store-Api-Fastify:
-    build:
-      context: ./My-Store-Api-Fastify
+  My-Store-API-Fastify:
+    build: 
+      context: ./My-Store-API-Fastify
       dockerfile: Dockerfile
     image: m1_custom_api_fastify
     container_name: m1_custom_api_fastify
@@ -96,7 +99,8 @@ services:
     ports:
       - "3232:3232"
     depends_on:
-      - My-Store-PostgreSql
+      - My-Store-MongoSql
+        
     environment:
       - PORT=${PORT}
       - MONGODB_USER=${MONGODB_USER}
@@ -108,7 +112,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
   My-Store:
-    build:
+    build: 
       context: ./My-Store
       dockerfile: Dockerfile
     image: m1_custom_my-store
@@ -121,13 +125,14 @@ services:
     volumes:
       - .:/var/www/html
     depends_on:
-      - My-Store-Api-Express
-      - My-Store-Api-Fastify
+      - My-Store-API-Express
+      - My-Store-API-Fastify
     environment:
       - NEXT_PUBLIC_API_ENDPOINT=${NEXT_PUBLIC_API_ENDPOINT}
       - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 
+
 # Command
 # docker-compose --env-file .env -f docker-compose.yml up -d --build
 
-# docker-compose --env-file .env -f docker-compose.yml down --remove-orphans
+# docker-compose --env-file .env -f docker-compose.yml down --remove-orphans --volumes

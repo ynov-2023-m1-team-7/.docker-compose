@@ -82,10 +82,9 @@ services:
       - "3232:3232"        
     environment:
       - PORT=${PORT}
-      - MONGODB_USER=${MONGODB_USER}
-      - MONGODB_PWD=${MONGODB_PWD}
-      - MONGODB_URL=${MONGODB_URL}
-      - MONGODB_DB=${MONGODB_DB}
+      - MONGO_DB_USER=${MONGO_DB_USER}
+      - MONGO_DB_PASSWORD=${MONGO_DB_PASSWORD}
+      - MONGO_DB_DB=${MONGO_DB_DB}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
